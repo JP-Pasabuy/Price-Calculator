@@ -1,0 +1,67 @@
+from textwrap import dedent
+
+html = dedent(r"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JP Pasabuy Price Calculator</title>
+<style>
+body{font-family:Arial,sans-serif;background:#111;color:#fff;display:flex;justify-content:center;padding:30px}
+.card{background:#1f1f1f;border-radius:16px;padding:24px;max-width:420px;width:100%;box-shadow:0 0 20px rgba(0,0,0,.4)}
+h2{text-align:center;color:#f5c542}
+label{display:block;margin-top:14px}
+input,select{width:100%;padding:10px;margin-top:6px;border-radius:8px;border:1px solid #444;background:#2b2b2b;color:#fff}
+button{width:100%;padding:12px;margin-top:18px;border:none;border-radius:8px;background:#f5c542;font-weight:bold;cursor:pointer}
+.result{margin-top:18px;background:#2b2b2b;padding:14px;border-radius:10px;line-height:1.7}
+.small{color:#bbb;font-size:.9em}
+</style>
+</head>
+<body>
+<div class="card">
+<h2>JP Pasabuy Price Calculator</h2>
+<label>Category</label>
+<select id="cat">
+<option>Shoes</option>
+<option>Bulky Items</option>
+<option>Fragile Goods</option>
+<option>Perishable Goods</option>
+<option>Clothes</option>
+<option>Makeup</option>
+<option>Ointments</option>
+<option>Soap</option>
+<option>Others</option>
+</select>
+
+<label>Price (¥)</label>
+<input id="price" type="number" placeholder="Enter price in Yen">
+
+<button onclick="calc()">Calculate</button>
+
+<div id="out" class="result small">Enter a price and press Calculate.</div>
+</div>
+
+<script>
+function calc(){
+ const p=parseFloat(document.getElementById('price').value);
+ if(isNaN(p)){document.getElementById('out').innerHTML="Please enter a valid price.";return;}
+ const c=document.getElementById('cat').value;
+ const high=["Shoes","Bulky Items","Fragile Goods","Perishable Goods"];
+ const m=high.includes(c)?0.75:0.50;
+ const subtotal=p*(1+m);
+ const php=subtotal*0.42;
+ document.getElementById('out').innerHTML=
+ `<b>Original Price:</b> ¥${p.toLocaleString()}<br>
+ <b>Markup:</b> ${(m*100).toFixed(0)}%<br>
+ <b>Subtotal:</b> ¥${subtotal.toLocaleString(undefined,{maximumFractionDigits:2})}<br>
+ <b>Exchange Rate:</b> ×0.42<br><hr>
+ <h3 style="color:#f5c542">Total: ₱${php.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</h3>`;
+}
+</script>
+</body>
+</html>""")
+
+with open("/mnt/data/index.html","w",encoding="utf-8") as f:
+    f.write(html)
+
+print("done")
